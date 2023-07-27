@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Font Clock with Rectangle</title>
+  <style>
+	body {
+      background-color: #90EE90;
+	  background-image: url('summer.jpg');
+	  background-position: center;
+	  background-size: cover;
+	  background-repeat: no-repeat;
+    }
+	
+    #clock-container {
+      position: relative;
+	  #border : 1px dotted red;
+	  height : 600px;
+	  text-align : center;
+    }
+
+    #clock {
+      font-size: 38px;
+      text-align: center;
+      margin-top: 20px;
+    }
+	
+	#stepclock {
+      font-size: 98px;
+	  color : red;
+	}
+	 
+
+    #left {
+	  #border: 1px dotted black;
+	  margin : 190px 0 0 10px ;
+	  width: 80px;
+      height: 70px;
+	  background-image: url('leftin.gif');
+	  background-position: center;
+	  background-size: cover;
+	  background-repeat: no-repeat;
+	}
+    #right {
+	  margin : 190px 0 0 10px ;
+	  width: 80px;
+      height: 70px;
+	  background-image: url('rightin.gif');
+	  background-position: center;
+	  background-size: cover;
+	  background-repeat: no-repeat;
+	}
+	
+	#nose {
+	  display : flex;
+	  background-image: url('nose.gif');
+	  background-position: center;
+	  background-size: 80%;
+	  background-repeat: no-repeat;
+	}
+	
+    .rectangle {
+      #margin-top: 120px;
+      #top: 90px; /* Adjust the top position as needed */
+      width: 200px;
+      height: 280px;
+	  #border: 1px dotted black;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+	
+	.breath {
+		font-size : 40px;
+	}
+	.nbreath {
+		font-size : 20px;
+		color : #ff0000;
+	}
+	
+	.button {
+ 	  position: absolute;
+	  top : 480px;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+	  width : 80px;
+	  height : 30px;
+	  text-align : center;
+    }
+
+    /* Adding hover effect to the button */
+    .button:hover {
+      background-color: #0056b3;
+    }
+	
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <br/>
+    <br/>
+	<div id="clock-container">
+
+		<div id="nose" class="rectangle" >
+		   <div id="left"></div>
+		   <div id="right"></div>
+		</div>
+
+		<label id="clock"></label><br/>
+		<label id="stepclock">Breath</label><br/>
+		<label id="pattern" class="breath">吸气</label>
+		<label id="nextpat" class="nbreath">呼气</label>
+		<!--
+		<label class="breath">呼气</label>
+		<label class="breath">闭气</label>
+		-->
+        <div id="btnStartStop" class="button" onclick="handleButtonClick()">Start</div>
+	</div>
+	
+
+
+	<script>
+		// Function to update the clock
+		var interval = 100;
+		var runningTime = 0;
+		var currentStep = 99;
+		var runningStep = 99;
+        var stepTime = 0;
+		var intervalId;
+		const breathingPattern = [
+		  [4, "左吸气 4s"],
+		  [20, "闭气 16s"],
+		  [28, "右呼气 8s"],
+		  [32, "右吸气 4s"],
+		  [48, "闭气 16s"],
+		  [56, "左呼气 8s"],
+		];
+		  
+		function StartBreath()
+		{
+			interval = 100;
+			runningTime = 0;
+			currentStep = 99;
+			runningStep = 99;
+			stepTime = 0;
+			updateClock();
+			intervalId = setInterval(updateClock, interval);
+		}
+		function StopExcersive()
+		{
+			clearInterval(intervalId);
+		}
+				 
+		function handleButtonClick(){
+		    var status = $("#btnStartStop").text();	
+			if(status == "Start") 
+			{
+			    StartBreath(); 
+				$("#btnStartStop").text("Stop");	
+			}
+			else if(status == "Stop") 
+			{
+			    StopExcersive();
+				$("#btnStartStop").text("Start");	
+			}
+			
+		}
+				 
+		 
+		function updateClock() {
+		
+		/*
+		  const now = new Date();
+		  const hours = now.getHours().toString().padStart(2, '0');
+		  const minutes = now.getMinutes().toString().padStart(2, '0');
+		  const seconds = now.getSeconds().toString().padStart(2, '0');
+		  const mseconds = now.getTime() % 1000;
+		  const timeString = `${hours}:${minutes}:${seconds}`;
+		  
+		  $('#clock').text(seconds+ "." + mseconds);
+		*/
+			runningTime = runningTime + interval;
+			stepTime =  stepTime + interval;
+		    var  seconds = parseInt(runningTime / 1000);
+		    var  mseconds = (runningTime % 1000).toString().padStart(3,"0");
+			var timeString = `${seconds}.${mseconds}`;
+			$('#clock').text(timeString);
+			
+			seconds  = (runningTime / 1000)% 56;
+			if (seconds  < breathingPattern[5][0])
+			   currentStep = 5;
+			if (seconds  < breathingPattern[4][0])
+			   currentStep = 4;
+			if (seconds  < breathingPattern[3][0])
+			   currentStep = 3;
+			if (seconds  < breathingPattern[2][0])
+			   currentStep = 2;
+			if (seconds  < breathingPattern[1][0])
+			   currentStep = 1;
+			if (seconds  < breathingPattern[0][0])
+			   currentStep = 0;
+  		  
+			  
+			if( currentStep !== runningStep ){
+				runningStep = currentStep;
+				stepTime = 0;
+			   
+				$("#left").css("background-image", "none");
+				$("#right").css("background-image", "none");
+				switch (runningStep) {
+				  case  0:
+					$("#left").css("background-image", "url('leftin.gif')");
+					break;
+				  case  2:
+ 					$("#right").css("background-image", "url('rightout.gif')");
+					break;
+				  case  3:
+ 					$("#right").css("background-image", "url('rightin.gif')");
+					break;
+				  case  5:
+					$("#left").css("background-image", "url('leftout.gif')");
+					break;
+				  default:
+					// Code to be executed if expression doesn't match any case
+					break;
+				}
+
+			}
+			   
+			   
+			$('#pattern').text(breathingPattern[runningStep][1]);
+			$('#nextpat').text('next->'+breathingPattern[(currentStep+1)%6][1]);
+
+		    seconds = parseInt(stepTime / 1000);
+		    mseconds = (stepTime % 1000).toString().padStart(3,"0");
+			timeString = `${seconds}.${mseconds}`;
+			$('#stepclock').text(timeString);
+
+		}
+		
+		
+
+		// Update the clock every second
+		$(document).ready(function() {
+		  //updateClock();
+		  //setInterval(updateClock, interval);
+		});
+	</script>
+	
+	
+</body>
+
+
+</html>
