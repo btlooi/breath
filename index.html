@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Current Time in Milliseconds</title>
+</head>
+<body>
+  <p id="milliseconds"></p>
+
+  <script>
+    // Function to get the current time in milliseconds
+    function getCurrentTimeInMilliseconds() {
+      const now = new Date();
+      return now.getTime();
+    }
+
+    // Display the current time in milliseconds on the page
+    const millisecondsElement = document.getElementById('milliseconds');
+    const currentTimeInMilliseconds = getCurrentTimeInMilliseconds();
+    millisecondsElement.textContent = `Current Time in Milliseconds: ${currentTimeInMilliseconds}`;
+  </script>
+</body>
+</html>
